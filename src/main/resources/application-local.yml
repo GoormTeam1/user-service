@@ -13,6 +13,14 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+jwt:
+  secret: ${JWT_SECRET}
+  accessToken :
+    expiration: ${ACCESS_EXPIRATION}
+  refreshToken:
+    expiration : ${REFRESH_EXPIRATION}
+
+
 # 서버 포트 설정
 server:
   port: 8081
