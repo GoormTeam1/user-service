@@ -17,17 +17,17 @@ public class ApiResponse<T> {
 	public static <T> ApiResponse<T> success(T data) {
 		return new ApiResponse<>(200, "Success", data);
 	}
-
+	public static <T> ApiResponse<T> success(HttpStatus httpStatus, String message, T data) {
+		return new ApiResponse<>(httpStatus.value(), message, data);
+	}
 	// 실패 응답용
 	public static <T> ApiResponse<T> error(ErrorCode errorCode) {
 		return new ApiResponse<>(errorCode.getStatus().value(), errorCode.getMessage(),null);
 	}
 
-	public static <T> ApiResponse<T> error(int status, String message) {
-		return new ApiResponse<>(status,message,null);
+	public static <T> ApiResponse<T> error(HttpStatus httpStatus, String message) {
+		return new ApiResponse<>(httpStatus.value(),message,null);
 	}
 
-	public static <T> ApiResponse<T> success(HttpStatus httpStatus,String message, T data) {
-		return new ApiResponse<>(httpStatus.value(), message, data);
-	}
+
 }
