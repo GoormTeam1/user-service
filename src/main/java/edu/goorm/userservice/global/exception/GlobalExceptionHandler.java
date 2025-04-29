@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 		ErrorCode errorCode = e.getErrorCode();
 		return ResponseEntity
 				.status(errorCode.getStatus())
-				.body(ApiResponse.error(errorCode.getStatus().value(), errorCode.getMessage()));
+				.body(ApiResponse.error(errorCode.getStatus(), errorCode.getMessage()));
 	}
 
 	// 예상 못한 모든 예외 처리
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 		return ResponseEntity
 				.status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus())
 				.body(ApiResponse.error(
-						ErrorCode.INTERNAL_SERVER_ERROR.getStatus().value(),
+						ErrorCode.INTERNAL_SERVER_ERROR.getStatus(),
 						ErrorCode.INTERNAL_SERVER_ERROR.getMessage()
 				));
 	}
