@@ -15,11 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,12 +57,11 @@ public class UserController {
   }
 
   @GetMapping("/me")
-  public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) {
-    if (userDetails == null) {
-      throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+  public ResponseEntity<?> getMyInfo(@RequestHeader("X-User-Email") String email) {
+    if (email == null || email.isBlank()) {
+      throw new BusinessException(ErrorCode.NO_AUTH_HEADER);
     }
 
-    String email = userDetails.getUsername();
     User user = userService.findByEmail(email);
 
     UserInfoResponse response = new UserInfoResponse(
@@ -71,6 +69,7 @@ public class UserController {
         user.getEmail(),
         user.getUsername()
     );
+    System.out.println("x-email = " + email);
 
     return ResponseEntity.ok(ApiResponse.success(response));
   }
