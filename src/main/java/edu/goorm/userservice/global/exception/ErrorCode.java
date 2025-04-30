@@ -10,8 +10,15 @@ public enum ErrorCode {
   INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "잘못된 입력입니다."),
   // 401
   UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
-  INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "만료되거나 토큰이 존재하지 않습니다."),
   INVALID_PASSWORD(HttpStatus.UNAUTHORIZED,"비밀번호가 유효하지 않습니다."),
+  INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "만료되었거나 유효하지 않은 토큰입니다."),
+  EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "Access Token이 만료되었습니다."),
+  EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh Token이 만료되었습니다."),
+  INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),
+  NO_AUTH_HEADER(HttpStatus.UNAUTHORIZED, "Authorization 헤더가 존재하지 않습니다."),
+  MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰 형식이 잘못되었습니다."),
+  UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "지원하지 않는 토큰입니다."),
+  TOKEN_SIGNATURE_INVALID(HttpStatus.UNAUTHORIZED, "토큰 서명이 유효하지 않습니다."),
   // 403
   FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
   // 404
