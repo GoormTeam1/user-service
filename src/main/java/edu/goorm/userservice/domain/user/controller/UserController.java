@@ -1,10 +1,11 @@
 package edu.goorm.userservice.domain.user.controller;
 
 
+import edu.goorm.userservice.domain.user.dto.AccessTokenDto;
 import edu.goorm.userservice.domain.user.dto.TokenDto;
-import edu.goorm.userservice.domain.user.dto.UserInfoResponse;
-import edu.goorm.userservice.domain.user.dto.UserLoginRequest;
-import edu.goorm.userservice.domain.user.dto.UserSignupRequest;
+import edu.goorm.userservice.domain.user.dto.UserInfoResponseDto;
+import edu.goorm.userservice.domain.user.dto.UserLoginRequestDto;
+import edu.goorm.userservice.domain.user.dto.UserSignupRequestDto;
 import edu.goorm.userservice.domain.user.entity.User;
 import edu.goorm.userservice.domain.user.service.UserService;
 import edu.goorm.userservice.global.exception.BusinessException;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -30,15 +32,17 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping("/signup")
-  public ResponseEntity<?> signup(@RequestBody UserSignupRequest request) {
-    User user = userService.signup(request);
-    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK,"회원가입 성공",user.getEmail()));
+  public ResponseEntity<?> signup(@RequestBody UserSignupRequestDto request) {
+    UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(userService.signup(request));
+    return ResponseEntity.ok(
+        ApiResponse.success(HttpStatus.CREATED, "회원가입 성공", userInfoResponseDto));
   }
 
   @PostMapping("/login")
-  public ApiResponse<?> login(@RequestBody UserLoginRequest request,
+  public ResponseEntity<?> login(@RequestBody UserLoginRequestDto request,
       HttpServletResponse response) {
     TokenDto tokenDto = userService.login(request);
+    AccessTokenDto accessTokenDto = new AccessTokenDto(tokenDto.getAccessToken());
 
     // HttpOnly 쿠키로 설정
     ResponseCookie cookie = ResponseCookie.from("token", tokenDto.getRefreshToken())
@@ -53,7 +57,7 @@ public class UserController {
     System.out.println(tokenDto.getAccessToken());
     System.out.println(tokenDto.getRefreshToken());
 
-    return ApiResponse.success(HttpStatus.OK,"로그인 성공", tokenDto.getAccessToken());
+    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "로그인 성공", accessTokenDto));
   }
 
   @GetMapping("/me")
@@ -64,14 +68,9 @@ public class UserController {
 
     User user = userService.findByEmail(email);
 
-    UserInfoResponse response = new UserInfoResponse(
-        user.getId(),
-        user.getEmail(),
-        user.getUsername()
-    );
-    System.out.println("x-email = " + email);
+    UserInfoResponseDto response = new UserInfoResponseDto(user);
 
-    return ResponseEntity.ok(ApiResponse.success(response));
+    return ResponseEntity.ok(ApiResponse.success(HttpStatus.CREATED, "회원 정보 불러오기 성공", response));
   }
 
   @PostMapping("/logout")

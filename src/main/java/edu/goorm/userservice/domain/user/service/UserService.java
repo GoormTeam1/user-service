@@ -3,12 +3,17 @@ package edu.goorm.userservice.domain.user.service;
 
 import edu.goorm.userservice.domain.auth.jwt.JwtTokenProvider;
 import edu.goorm.userservice.domain.user.dto.TokenDto;
-import edu.goorm.userservice.domain.user.dto.UserLoginRequest;
-import edu.goorm.userservice.domain.user.dto.UserSignupRequest;
+import edu.goorm.userservice.domain.user.dto.UserLoginRequestDto;
+import edu.goorm.userservice.domain.user.dto.UserSignupRequestDto;
+import edu.goorm.userservice.domain.user.entity.Gender;
+import edu.goorm.userservice.domain.user.entity.Level;
 import edu.goorm.userservice.domain.user.entity.User;
+import edu.goorm.userservice.domain.user.entity.UserInterest;
+import edu.goorm.userservice.domain.user.repository.UserInterestRepository;
 import edu.goorm.userservice.domain.user.repository.UserRepository;
 import edu.goorm.userservice.global.exception.BusinessException;
 import edu.goorm.userservice.global.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,8 +25,9 @@ public class UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
+  private final UserInterestRepository userInterestRepository;
 
-  public User signup(UserSignupRequest request) {
+  public User signup(UserSignupRequestDto request) {
     if (userRepository.findByEmail(request.getEmail()).isPresent()) {
       throw new BusinessException(ErrorCode.DUPLICATE_RESOURCE);
     }
@@ -30,13 +36,24 @@ public class UserService {
         .email(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
         .username(request.getUsername())
+        .level(Level.valueOf(request.getLevel()))
+        .gender(Gender.valueOf(request.getGender()))
+        .birthDate(request.getBirthDate())
         .role("ROLE_USER")
         .build();
+
+    userRepository.save(user);
+
+    List<UserInterest> interests = request.getCategoryIdList().stream()
+        .map(categoryId -> new UserInterest(user.getId(), categoryId))
+        .toList();
+
+    userInterestRepository.saveAll(interests);
 
     return userRepository.save(user);
   }
 
-  public TokenDto login(UserLoginRequest request) {
+  public TokenDto login(UserLoginRequestDto request) {
     User user = userRepository.findByEmail(request.getEmail())
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 

@@ -3,9 +3,13 @@ package edu.goorm.userservice.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,5 +34,13 @@ public class User {
 
   private String username;
 
+  @Enumerated(EnumType.STRING)
+  private Gender gender;
+
+  private Date birthDate;
+
   private String role; // ROLE_USER 등
+
+  @Enumerated(EnumType.STRING) // VARCHAR로 저장됨
+  private Level level;
 }
