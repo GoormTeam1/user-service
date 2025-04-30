@@ -1,6 +1,16 @@
 package edu.goorm.userservice.domain.user.controller;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import edu.goorm.userservice.domain.user.dto.AccessTokenDto;
 import edu.goorm.userservice.domain.user.dto.TokenDto;
 import edu.goorm.userservice.domain.user.dto.UserInfoResponseDto;
@@ -12,17 +22,8 @@ import edu.goorm.userservice.global.exception.BusinessException;
 import edu.goorm.userservice.global.exception.ErrorCode;
 import edu.goorm.userservice.global.response.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/user")
@@ -39,7 +40,7 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody UserLoginRequestDto request,
+  public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto request,
       HttpServletResponse response) {
     TokenDto tokenDto = userService.login(request);
     AccessTokenDto accessTokenDto = new AccessTokenDto(tokenDto.getAccessToken());
