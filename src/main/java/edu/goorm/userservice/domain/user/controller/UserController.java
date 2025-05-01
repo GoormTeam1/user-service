@@ -33,7 +33,7 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping("/signup")
-  public ResponseEntity<?> signup(@RequestBody UserSignupRequestDto request) {
+  public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequestDto request) {
     UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(userService.signup(request));
     return ResponseEntity.ok(
         ApiResponse.success(HttpStatus.CREATED, "회원가입 성공", userInfoResponseDto));
