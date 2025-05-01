@@ -14,7 +14,10 @@ public class UserInterest {
   @EmbeddedId
   private UserInterestId id;
 
-  public UserInterest(Long userId, Long categoryId) {
-    this.id = new UserInterestId(userId, categoryId);
+  public UserInterest(Long userId, Category category) {
+    this.id = new UserInterestId(userId, category);
+  }
+  public UserInterest(Long userId, String category) {
+    this.id = new UserInterestId(userId, Category.valueOf(category));
   }
 }

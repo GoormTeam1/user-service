@@ -1,14 +1,23 @@
 package edu.goorm.userservice.domain.user.controller;
 
 
+import edu.goorm.userservice.domain.user.dto.CategoryListRequestDto;
+import edu.goorm.userservice.domain.user.dto.LevelRequestDto;
+import edu.goorm.userservice.domain.user.entity.Category;
+import edu.goorm.userservice.domain.user.entity.Level;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.goorm.userservice.domain.user.dto.AccessTokenDto;
@@ -55,8 +64,6 @@ public class UserController {
         .build();
 
     response.addHeader("Set-Cookie", cookie.toString());
-    System.out.println(tokenDto.getAccessToken());
-    System.out.println(tokenDto.getRefreshToken());
 
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "로그인 성공", accessTokenDto));
   }
@@ -88,5 +95,25 @@ public class UserController {
     response.addHeader("Set-Cookie", cookie.toString());
 
     return ResponseEntity.ok("로그아웃 성공");
+  }
+
+  @PatchMapping("/interests")
+  public ResponseEntity<?> updateInterests(@AuthenticationPrincipal UserDetails userDetails,@RequestBody
+      CategoryListRequestDto categoryListRequestDto){
+    
+    String email = userDetails.getUsername();
+    System.out.println("email = " + email);
+    userService.updateInterests(email,categoryListRequestDto);
+
+    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK,"관심 카테고리 변경 성공",null));
+  }
+
+  @PatchMapping("/level")
+  public ResponseEntity<?> updateInterests(@AuthenticationPrincipal UserDetails userDetails, @RequestBody
+      LevelRequestDto levelRequestDto){
+    String email = userDetails.getUsername();
+    userService.updateLevel(email, levelRequestDto.getLevel());
+
+    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK,"난이도 변경 성공",null));
   }
 }

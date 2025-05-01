@@ -2,17 +2,21 @@ package edu.goorm.userservice.domain.user.service;
 
 
 import edu.goorm.userservice.domain.auth.jwt.JwtTokenProvider;
+import edu.goorm.userservice.domain.user.dto.CategoryListRequestDto;
 import edu.goorm.userservice.domain.user.dto.TokenDto;
 import edu.goorm.userservice.domain.user.dto.UserLoginRequestDto;
 import edu.goorm.userservice.domain.user.dto.UserSignupRequestDto;
+import edu.goorm.userservice.domain.user.entity.Category;
 import edu.goorm.userservice.domain.user.entity.Gender;
 import edu.goorm.userservice.domain.user.entity.Level;
 import edu.goorm.userservice.domain.user.entity.User;
 import edu.goorm.userservice.domain.user.entity.UserInterest;
+import edu.goorm.userservice.domain.user.entity.UserInterestId;
 import edu.goorm.userservice.domain.user.repository.UserInterestRepository;
 import edu.goorm.userservice.domain.user.repository.UserRepository;
 import edu.goorm.userservice.global.exception.BusinessException;
 import edu.goorm.userservice.global.exception.ErrorCode;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,8 +48,8 @@ public class UserService {
 
     userRepository.save(user);
 
-    List<UserInterest> interests = request.getCategoryIdList().stream()
-        .map(categoryId -> new UserInterest(user.getId(), categoryId))
+    List<UserInterest> interests = request.getCategoryList().stream()
+        .map(category -> new UserInterest(user.getId(), category))
         .toList();
 
     userInterestRepository.saveAll(interests);
@@ -69,4 +73,30 @@ public class UserService {
     return userRepository.findByEmail(email)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
   }
+
+  @Transactional
+  public void updateInterests(String email, CategoryListRequestDto categoryListRequestDto) {
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    Long userId = user.getId();
+
+    userInterestRepository.deleteAllByIdUserId(userId);
+
+    List<Category> categoryList = categoryListRequestDto.getCategoryList();
+
+    for (Category category : categoryList) {
+      UserInterestId id = new UserInterestId(userId, category);
+      userInterestRepository.save(new UserInterest(id));
+    }
+  }
+
+  @Transactional
+  public void updateLevel(String email, String level) {
+    Level levelEnum = Level.valueOf(level); // 문자열과 정확히 일치해야 함
+
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    user.setLevel(levelEnum);
+  }
 }
+

@@ -16,5 +16,5 @@ public class UserInterestId implements Serializable {
   private Long userId;
 
   @Column(name = "category_id")
-  private Long categoryId;
+  private Category category;
 }

@@ -1,5 +1,6 @@
 package edu.goorm.userservice.domain.user.dto;
 
+import edu.goorm.userservice.domain.user.entity.Category;
 import java.util.Date;
 import java.util.List;
 
@@ -31,5 +32,5 @@ public class UserSignupRequestDto {
 
     private String gender;
 
-    private List<Long> categoryIdList;
+    private List<Category> categoryList;
 }
