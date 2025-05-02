@@ -1,6 +1,7 @@
 package edu.goorm.userservice.domain.user.entity;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -16,6 +17,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "users")
@@ -34,14 +37,17 @@ public class User {
 
   private String password;
 
-  private String username;
+  private String userName;
 
   @Enumerated(EnumType.STRING)
   private Gender gender;
 
   private Date birthDate;
 
-  private String role; // ROLE_USER 등
+  @CreationTimestamp
+  @Column(updatable = false)
+  private LocalDateTime createAt;
+
 
   @Enumerated(EnumType.STRING) // VARCHAR로 저장됨
   private Level level;

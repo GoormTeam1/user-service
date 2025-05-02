@@ -1,5 +1,7 @@
 package edu.goorm.userservice.domain.user.entity;
 
+import org.aspectj.weaver.World;
+
 public enum Category {
-  경제,사회,국제,문화,연예,스포츠,IT,과학,생활
+  US, World, Pollitics, Business, Heallth, Entertainment, Style, Travel, Sports, Science, Climate, Weather
 }
