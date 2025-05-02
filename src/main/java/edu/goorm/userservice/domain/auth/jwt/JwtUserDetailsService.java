@@ -25,7 +25,6 @@ public class JwtUserDetailsService implements UserDetailsService {
     return User.builder()
         .username(user.getEmail())
         .password(user.getPassword())
-        .roles(user.getRole().replace("ROLE_", ""))
         .build();
   }
 }

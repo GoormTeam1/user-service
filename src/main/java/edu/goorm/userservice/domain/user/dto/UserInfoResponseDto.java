@@ -14,7 +14,7 @@ public class UserInfoResponseDto {
   private Long id;
   private String email;
   private String password;
-  private String username;
+  private String userName;
   private Level level;
   private Date birthDate;
   private Gender gender;
@@ -23,7 +23,7 @@ public class UserInfoResponseDto {
   public UserInfoResponseDto(User user){
     this.id = user.getId();
     this.email = user.getEmail();
-    this.username = user.getUsername();
+    this.userName = user.getUserName();
     this.level = user.getLevel();
     this.birthDate = user.getBirthDate();
     this.gender = user.getGender();

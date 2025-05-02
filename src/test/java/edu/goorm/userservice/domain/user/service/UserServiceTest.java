@@ -77,7 +77,7 @@ class UserServiceTest {
     signupRequest.setGender("남자");
     signupRequest.setBirthDate(new Date());
     signupRequest.setCategoryList(
-        Arrays.asList(Category.valueOf("경제"), Category.valueOf("스포츠"), Category.valueOf("IT")));
+        Arrays.asList(Category.valueOf("World"), Category.valueOf("US"), Category.valueOf("Sports")));
 
     // 로그인 요청 데이터 설정
     loginRequest = new UserLoginRequestDto();
@@ -89,18 +89,17 @@ class UserServiceTest {
         .id(1L)
         .email("test@example.com")
         .password("encodedPassword")
-        .username("testuser")
+        .userName("testuser")
         .gender(Gender.valueOf("남자"))
         .birthDate(new Date())
         .level(Level.valueOf("중"))
-        .role("ROLE_USER")
         .build();
 
     // 사용자 관심사 설정
     userInterests = Arrays.asList(
-        new UserInterest(1L, "경제"),
-        new UserInterest(1L, "IT"),
-        new UserInterest(1L, "스포츠")
+        new UserInterest(1L, "World"),
+        new UserInterest(1L, "US"),
+        new UserInterest(1L, "Sports")
     );
   }
 
@@ -119,7 +118,7 @@ class UserServiceTest {
     // then
     assertNotNull(result);
     assertEquals(user.getEmail(), result.getEmail());
-    assertEquals(user.getUsername(), result.getUsername());
+    assertEquals(user.getUserName(), result.getUserName());
     assertEquals(user.getGender(), result.getGender());
     assertEquals(user.getLevel(), result.getLevel());
     verify(userRepository, times(1)).findByEmail(anyString());
@@ -203,7 +202,7 @@ class UserServiceTest {
     // then
     assertNotNull(result);
     assertEquals(user.getEmail(), result.getEmail());
-    assertEquals(user.getUsername(), result.getUsername());
+    assertEquals(user.getUserName(), result.getUserName());
     assertEquals(user.getGender(), result.getGender());
     assertEquals(user.getLevel(), result.getLevel());
     verify(userRepository, times(1)).findByEmail(anyString());

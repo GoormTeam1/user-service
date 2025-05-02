@@ -39,11 +39,10 @@ public class UserService {
     User user = User.builder()
         .email(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
-        .username(request.getUsername())
+        .userName(request.getUsername())
         .level(Level.valueOf(request.getLevel()))
         .gender(Gender.valueOf(request.getGender()))
         .birthDate(request.getBirthDate())
-        .role("ROLE_USER")
         .build();
 
     userRepository.save(user);
