@@ -145,7 +145,7 @@ class UserServiceTest {
     // given
     when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
     when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-    when(jwtTokenProvider.generateAccessToken(anyString())).thenReturn("accessToken");
+    when(jwtTokenProvider.generateAccessToken(anyString(),anyString())).thenReturn("accessToken");
     when(jwtTokenProvider.generateRefreshToken(anyString())).thenReturn("refreshToken");
 
     // when
@@ -157,7 +157,7 @@ class UserServiceTest {
     assertEquals("refreshToken", result.getRefreshToken());
     verify(userRepository, times(1)).findByEmail(anyString());
     verify(passwordEncoder, times(1)).matches(anyString(), anyString());
-    verify(jwtTokenProvider, times(1)).generateAccessToken(anyString());
+    verify(jwtTokenProvider, times(1)).generateAccessToken(anyString(),anyString());
     verify(jwtTokenProvider, times(1)).generateRefreshToken(anyString());
   }
 
@@ -171,7 +171,7 @@ class UserServiceTest {
     assertThrows(BusinessException.class, () -> userService.login(loginRequest));
     verify(userRepository, times(1)).findByEmail(anyString());
     verify(passwordEncoder, never()).matches(anyString(), anyString());
-    verify(jwtTokenProvider, never()).generateAccessToken(anyString());
+    verify(jwtTokenProvider, never()).generateAccessToken(anyString(),anyString());
     verify(jwtTokenProvider, never()).generateRefreshToken(anyString());
   }
 
@@ -186,7 +186,7 @@ class UserServiceTest {
     assertThrows(BusinessException.class, () -> userService.login(loginRequest));
     verify(userRepository, times(1)).findByEmail(anyString());
     verify(passwordEncoder, times(1)).matches(anyString(), anyString());
-    verify(jwtTokenProvider, never()).generateAccessToken(anyString());
+    verify(jwtTokenProvider, never()).generateAccessToken(anyString(),anyString());
     verify(jwtTokenProvider, never()).generateRefreshToken(anyString());
   }
 

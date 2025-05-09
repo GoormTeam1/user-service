@@ -5,6 +5,8 @@ import edu.goorm.userservice.domain.user.dto.CategoryListRequestDto;
 import edu.goorm.userservice.domain.user.dto.LevelRequestDto;
 import edu.goorm.userservice.domain.user.entity.Category;
 import edu.goorm.userservice.domain.user.entity.Level;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -69,14 +71,19 @@ public class UserController {
   }
 
   @GetMapping("/me")
-  public ResponseEntity<?> getMyInfo(@RequestHeader("X-User-Email") String email) {
+  public ResponseEntity<?> getMyInfo(@RequestHeader("X-User-Email") String email,
+      @RequestHeader("X-User-Username") String encodedUsername) {
     if (email == null || email.isBlank()) {
       throw new BusinessException(ErrorCode.NO_AUTH_HEADER);
     }
+    String username = URLDecoder.decode(encodedUsername, StandardCharsets.UTF_8);
 
     User user = userService.findByEmail(email);
+    List<Category> categoryList = userService.findInterestByUserId(user.getId());
 
-    UserInfoResponseDto response = new UserInfoResponseDto(user);
+    UserInfoResponseDto response = new UserInfoResponseDto(user, categoryList);
+    System.out.println(email);
+    System.out.println(username);
 
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.CREATED, "회원 정보 불러오기 성공", response));
   }

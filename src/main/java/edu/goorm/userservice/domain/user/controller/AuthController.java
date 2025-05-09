@@ -37,7 +37,7 @@ public class AuthController {
     var userDetails = userDetailsService.loadUserByUsername(email);
 
     // 새 Access Token 발급
-    String newAccessToken = jwtTokenProvider.generateAccessToken(email);
+    String newAccessToken = jwtTokenProvider.generateAccessToken(email,userDetails.getUsername());
 
     // (선택) 새 Refresh Token도 발급
     String newRefreshToken = jwtTokenProvider.generateRefreshToken(email);

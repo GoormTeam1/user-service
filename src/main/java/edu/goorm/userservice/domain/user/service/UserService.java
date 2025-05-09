@@ -65,7 +65,7 @@ public class UserService {
     }
 
     return new TokenDto(jwtTokenProvider.generateAccessToken(
-        user.getEmail()), jwtTokenProvider.generateRefreshToken(user.getEmail()));
+        user.getEmail(),user.getUserName()), jwtTokenProvider.generateRefreshToken(user.getEmail()));
   }
 
   public User findByEmail(String email) {
