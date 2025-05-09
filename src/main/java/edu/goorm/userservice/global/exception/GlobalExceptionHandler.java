@@ -1,6 +1,5 @@
 package edu.goorm.userservice.global.exception;
 
-
 import edu.goorm.userservice.global.exception.BusinessException;
 import edu.goorm.userservice.global.exception.ErrorCode;
 import edu.goorm.userservice.global.response.ApiResponse;
@@ -11,6 +10,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -23,9 +25,10 @@ public class GlobalExceptionHandler {
 				.body(ApiResponse.error(errorCode.getStatus(), errorCode.getMessage()));
 	}
 
-	// 예상 못한 모든 예외 처리
+	// 예상 못한 모든 예외 처리 (로그 추가됨!)
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ApiResponse<Object>> handleException(Exception e) {
+		log.error("예기치 못한 오류", e); // ← 추가된 부분
 		return ResponseEntity
 				.status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus())
 				.body(ApiResponse.error(
