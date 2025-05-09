@@ -82,9 +82,6 @@ public class UserController {
     List<Category> categoryList = userService.findInterestByUserId(user.getId());
 
     UserInfoResponseDto response = new UserInfoResponseDto(user, categoryList);
-    System.out.println(email);
-    System.out.println(username);
-
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.CREATED, "회원 정보 불러오기 성공", response));
   }
 
