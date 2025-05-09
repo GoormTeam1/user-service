@@ -43,9 +43,9 @@ public class UserController {
 
   @PostMapping("/signup")
   public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequestDto request) {
-    UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(userService.signup(request));
+    userService.signup(request);
     return ResponseEntity.ok(
-        ApiResponse.success(HttpStatus.CREATED, "회원가입 성공", userInfoResponseDto));
+        ApiResponse.success(HttpStatus.CREATED, "회원가입 성공", null));
   }
 
   @PostMapping("/login")
@@ -98,22 +98,24 @@ public class UserController {
   }
 
   @PatchMapping("/interests")
-  public ResponseEntity<?> updateInterests(@AuthenticationPrincipal UserDetails userDetails,@RequestBody
-      CategoryListRequestDto categoryListRequestDto){
-    
+  public ResponseEntity<?> updateInterests(@AuthenticationPrincipal UserDetails userDetails,
+      @RequestBody
+      CategoryListRequestDto categoryListRequestDto) {
+
     String email = userDetails.getUsername();
     System.out.println("email = " + email);
-    userService.updateInterests(email,categoryListRequestDto);
+    userService.updateInterests(email, categoryListRequestDto);
 
-    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK,"관심 카테고리 변경 성공",null));
+    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "관심 카테고리 변경 성공", null));
   }
 
   @PatchMapping("/level")
-  public ResponseEntity<?> updateInterests(@AuthenticationPrincipal UserDetails userDetails, @RequestBody
-      LevelRequestDto levelRequestDto){
+  public ResponseEntity<?> updateLevel(@AuthenticationPrincipal UserDetails userDetails,
+      @RequestBody
+      LevelRequestDto levelRequestDto) {
     String email = userDetails.getUsername();
     userService.updateLevel(email, levelRequestDto.getLevel());
 
-    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK,"난이도 변경 성공",null));
+    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "난이도 변경 성공", null));
   }
 }

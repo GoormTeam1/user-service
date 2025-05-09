@@ -97,5 +97,9 @@ public class UserService {
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     user.setLevel(levelEnum);
   }
+
+  public List<Category> findInterestByUserId(Long id) {
+    return userInterestRepository.findCategoriesByUserId(id);
+  }
 }
 

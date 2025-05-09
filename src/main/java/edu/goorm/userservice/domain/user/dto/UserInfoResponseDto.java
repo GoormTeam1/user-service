@@ -1,5 +1,6 @@
 package edu.goorm.userservice.domain.user.dto;
 
+import edu.goorm.userservice.domain.user.entity.Category;
 import edu.goorm.userservice.domain.user.entity.Gender;
 import edu.goorm.userservice.domain.user.entity.Level;
 import edu.goorm.userservice.domain.user.entity.User;
@@ -13,19 +14,19 @@ import lombok.Data;
 public class UserInfoResponseDto {
   private Long id;
   private String email;
-  private String password;
   private String userName;
   private Level level;
   private Date birthDate;
   private Gender gender;
-  private List<Long> categoryId;
+  private List<Category> categoryList;
 
-  public UserInfoResponseDto(User user){
+  public UserInfoResponseDto(User user, List<Category> categoryList){
     this.id = user.getId();
     this.email = user.getEmail();
     this.userName = user.getUserName();
     this.level = user.getLevel();
     this.birthDate = user.getBirthDate();
     this.gender = user.getGender();
+    this.categoryList = categoryList;
   }
 }
