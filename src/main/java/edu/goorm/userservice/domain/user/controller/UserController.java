@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,7 +102,7 @@ public class UserController {
     return ResponseEntity.ok("로그아웃 성공");
   }
 
-  @PatchMapping("/interests")
+  @PutMapping("/interests")
   public ResponseEntity<?> updateInterests(@AuthenticationPrincipal UserDetails userDetails,
       @RequestBody
       CategoryListRequestDto categoryListRequestDto) {
