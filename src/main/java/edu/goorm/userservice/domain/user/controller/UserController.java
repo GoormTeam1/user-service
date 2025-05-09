@@ -71,12 +71,12 @@ public class UserController {
   }
 
   @GetMapping("/me")
-  public ResponseEntity<?> getMyInfo(@RequestHeader("X-User-Email") String email,
-      @RequestHeader("X-User-Username") String encodedUsername) {
+  public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) {
+    String email = userDetails.getUsername();
+    System.out.println(email);
     if (email == null || email.isBlank()) {
       throw new BusinessException(ErrorCode.NO_AUTH_HEADER);
     }
-    String username = URLDecoder.decode(encodedUsername, StandardCharsets.UTF_8);
 
     User user = userService.findByEmail(email);
     List<Category> categoryList = userService.findInterestByUserId(user.getId());
