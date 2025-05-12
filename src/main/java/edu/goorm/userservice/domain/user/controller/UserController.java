@@ -13,15 +13,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import edu.goorm.userservice.domain.user.dto.AccessTokenDto;
 import edu.goorm.userservice.domain.user.dto.TokenDto;
@@ -123,4 +115,9 @@ public class UserController {
 
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "난이도 변경 성공", null));
   }
+
+  @GetMapping("/internal/find-id-by-email")
+  Long getUserIdByEmail(@RequestHeader("X-USER-EMAIL")String email){
+    return userService.findByEmail(email).getId();
+  };
 }
