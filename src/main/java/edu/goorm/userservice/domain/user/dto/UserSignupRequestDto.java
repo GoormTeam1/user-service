@@ -1,5 +1,6 @@
 package edu.goorm.userservice.domain.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import edu.goorm.userservice.domain.user.entity.Category;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,7 @@ public class UserSignupRequestDto {
 
     private String level;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date birthDate;
 
     private String gender;
