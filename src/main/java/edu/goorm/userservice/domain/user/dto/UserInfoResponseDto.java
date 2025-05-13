@@ -21,8 +21,8 @@ public class UserInfoResponseDto {
   private List<Category> categoryList;
 
   public UserInfoResponseDto(User user, List<Category> categoryList){
-    this.id = user.getId();
-    this.email = user.getEmail();
+    this.id = user.getUserId();
+    this.email = user.getUserEmail();
     this.userName = user.getUserName();
     this.level = user.getLevel();
     this.birthDate = user.getBirthDate();

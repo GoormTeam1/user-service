@@ -30,14 +30,15 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final UserInterestRepository userInterestRepository;
+  private final KafkaProducerService kafkaProducerService;
 
-  public void signup(UserSignupRequestDto request) {
-    if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+  public User signup(UserSignupRequestDto request) {
+    if (userRepository.findByUserEmail(request.getEmail()).isPresent()) {
       throw new BusinessException(ErrorCode.DUPLICATE_RESOURCE);
     }
 
     User user = User.builder()
-        .email(request.getEmail())
+        .userEmail((request.getEmail()))
         .password(passwordEncoder.encode(request.getPassword()))
         .userName(request.getUsername())
         .level(Level.valueOf(request.getLevel()))
@@ -48,14 +49,14 @@ public class UserService {
     userRepository.save(user);
 
     List<UserInterest> interests = request.getCategoryList().stream()
-        .map(category -> new UserInterest(user.getId(), category))
+        .map(category -> new UserInterest(user.getUserId(), category))
         .toList();
 
     userInterestRepository.saveAll(interests);
   }
 
   public TokenDto login(UserLoginRequestDto request) {
-    User user = userRepository.findByEmail(request.getEmail())
+    User user = userRepository.findByUserEmail(request.getEmail())
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -63,19 +64,19 @@ public class UserService {
     }
 
     return new TokenDto(jwtTokenProvider.generateAccessToken(
-        user.getEmail(),user.getUserName()), jwtTokenProvider.generateRefreshToken(user.getEmail()));
+        user.getUserEmail(),user.getUserName()), jwtTokenProvider.generateRefreshToken(user.getUserEmail()));
   }
 
   public User findByEmail(String email) {
-    return userRepository.findByEmail(email)
+    return userRepository.findByUserEmail(email)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
   }
 
   @Transactional
   public void updateInterests(String email, CategoryListRequestDto categoryListRequestDto) {
-    User user = userRepository.findByEmail(email)
+    User user = userRepository.findByUserEmail(email)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-    Long userId = user.getId();
+    Long userId = user.getUserId();
 
     userInterestRepository.deleteAllByIdUserId(userId);
 
@@ -91,7 +92,7 @@ public class UserService {
   public void updateLevel(String email, String level) {
     Level levelEnum = Level.valueOf(level); // 문자열과 정확히 일치해야 함
 
-    User user = userRepository.findByEmail(email)
+    User user = userRepository.findByUserEmail(email)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     user.setLevel(levelEnum);
   }

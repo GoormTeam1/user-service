@@ -72,7 +72,7 @@ public class UserController {
     }
 
     User user = userService.findByEmail(email);
-    List<Category> categoryList = userService.findInterestByUserId(user.getId());
+    List<Category> categoryList = userService.findInterestByUserId(user.getUserId());
 
     UserInfoResponseDto response = new UserInfoResponseDto(user, categoryList);
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.CREATED, "회원 정보 불러오기 성공", response));
@@ -118,6 +118,6 @@ public class UserController {
 
   @GetMapping("/internal/find-id-by-email")
   Long getUserIdByEmail(@RequestHeader("X-USER-EMAIL")String email){
-    return userService.findByEmail(email).getId();
+    return userService.findByEmail(email).getUserId();
   };
 }

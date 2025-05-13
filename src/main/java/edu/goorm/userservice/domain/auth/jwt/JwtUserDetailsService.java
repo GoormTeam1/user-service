@@ -19,11 +19,11 @@ public class JwtUserDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String email)
       throws UsernameNotFoundException {
 
-    var user = userRepository.findByEmail(email)
+    var user = userRepository.findByUserEmail(email)
         .orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
 
     return User.builder()
-        .username(user.getEmail())
+        .username(user.getUserEmail())
         .password(user.getPassword())
         .build();
   }
