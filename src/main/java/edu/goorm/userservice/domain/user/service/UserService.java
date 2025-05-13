@@ -31,7 +31,7 @@ public class UserService {
   private final JwtTokenProvider jwtTokenProvider;
   private final UserInterestRepository userInterestRepository;
 
-  public User signup(UserSignupRequestDto request) {
+  public void signup(UserSignupRequestDto request) {
     if (userRepository.findByEmail(request.getEmail()).isPresent()) {
       throw new BusinessException(ErrorCode.DUPLICATE_RESOURCE);
     }
@@ -52,8 +52,6 @@ public class UserService {
         .toList();
 
     userInterestRepository.saveAll(interests);
-
-    return userRepository.save(user);
   }
 
   public TokenDto login(UserLoginRequestDto request) {
