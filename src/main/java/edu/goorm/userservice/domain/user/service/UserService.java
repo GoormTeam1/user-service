@@ -53,6 +53,9 @@ public class UserService {
         .toList();
 
     userInterestRepository.saveAll(interests);
+    kafkaProducerService.sendSignupEvent(user,request.getCategoryList());
+
+    return user;
   }
 
   public TokenDto login(UserLoginRequestDto request) {
