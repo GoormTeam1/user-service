@@ -28,6 +28,15 @@ public class KafkaProducerService {
     }
   }
 
+  public void sendUpdateInterestEvent(User user, List<Category> categoryList) {
+    try {
+      String json = objectMapper.writeValueAsString(userToMap(user,categoryList));
+      kafkaTemplate.send("user.updateInterest", json);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException("Kafka 메시지 직렬화 실패", e);
+    }
+  }
+
   private static SignupPayload userToMap(User user, List<Category> categoryList) {
     return new SignupPayload(
         user.getUserId(),

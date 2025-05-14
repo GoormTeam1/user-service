@@ -100,7 +100,6 @@ public class UserController {
       CategoryListRequestDto categoryListRequestDto) {
 
     String email = userDetails.getUsername();
-    System.out.println("email = " + email);
     userService.updateInterests(email, categoryListRequestDto);
 
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "관심 카테고리 변경 성공", null));

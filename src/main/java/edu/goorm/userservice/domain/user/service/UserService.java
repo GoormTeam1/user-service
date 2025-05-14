@@ -84,6 +84,7 @@ public class UserService {
     userInterestRepository.deleteAllByIdUserId(userId);
 
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
+    kafkaProducerService.sendUpdateInterestEvent(user,categoryList);
 
     for (Category category : categoryList) {
       UserInterestId id = new UserInterestId(userId, category);
