@@ -51,9 +51,9 @@ public class UserService {
     List<UserInterest> interests = request.getCategoryList().stream()
         .map(category -> new UserInterest(user.getUserId(), category))
         .toList();
+    kafkaProducerService.sendSignupEvent(user,request.getCategoryList());
 
     userInterestRepository.saveAll(interests);
-    kafkaProducerService.sendSignupEvent(user,request.getCategoryList());
 
     return user;
   }
@@ -81,15 +81,20 @@ public class UserService {
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     Long userId = user.getUserId();
 
+    // 기존 관심 카테고리 삭제
     userInterestRepository.deleteAllByIdUserId(userId);
 
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
-    kafkaProducerService.sendUpdateInterestEvent(user,categoryList);
 
-    for (Category category : categoryList) {
-      UserInterestId id = new UserInterestId(userId, category);
-      userInterestRepository.save(new UserInterest(id));
-    }
+    // Kafka 이벤트 전송
+    kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+
+    // 벌크 insert할 UserInterest 리스트 생성
+    List<UserInterest> interests = categoryList.stream()
+        .map(category -> new UserInterest(new UserInterestId(userId, category)))
+        .toList();
+
+    userInterestRepository.saveAll(interests);  // 벌크 저장
   }
 
   @Transactional
