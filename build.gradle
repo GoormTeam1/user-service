@@ -47,3 +47,8 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+bootJar {
+    archiveFileName = 'user.jar' // 생성될 jar 파일 이름
+}
