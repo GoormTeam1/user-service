@@ -5,6 +5,8 @@ import edu.goorm.userservice.domain.user.dto.CategoryListRequestDto;
 import edu.goorm.userservice.domain.user.dto.LevelRequestDto;
 import edu.goorm.userservice.domain.user.entity.Category;
 import edu.goorm.userservice.domain.user.entity.Level;
+import edu.goorm.userservice.global.logger.CustomLogger;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -37,8 +39,18 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping("/signup")
-  public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequestDto request) {
-    userService.signup(request);
+  public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequestDto userSignupRequestDto,
+      HttpServletRequest request) {
+    userService.signup(userSignupRequestDto);
+    CustomLogger.logRequest(
+        "login",
+        "/signup",
+        "Post",
+        null,
+        "{"
+            + "userEmail : " + userSignupRequestDto.getEmail() + "}",
+        request
+    );
     return ResponseEntity.ok(
         ApiResponse.success(HttpStatus.CREATED, "회원가입 성공", null));
   }
@@ -116,7 +128,9 @@ public class UserController {
   }
 
   @GetMapping("/internal/find-id-by-email")
-  Long getUserIdByEmail(@RequestHeader("X-USER-EMAIL")String email){
+  Long getUserIdByEmail(@RequestHeader("X-USER-EMAIL") String email) {
     return userService.findByEmail(email).getUserId();
-  };
+  }
+
+  ;
 }

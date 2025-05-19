@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Spring Boot 기본 콘솔 로그 유지 -->
+    <springProfile name="default">
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    </springProfile>
+
+    <!-- 모든 application 로그 파일 (비활성화 상태로 유지) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- UserController 로그 전용 파일 설정 -->
+    <appender name="USERCONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/userController.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/userController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <!-- 로그 메시지만 기록: %msg%n -->
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 루트 로거 (기본 콘솔 출력만 유지) -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- ✅ UserController 전용 로거 설정 -->
+    <logger level="INFO"
+      name="edu.goorm.userservice.domain.user.controller.UserController"
+      additivity="false">
+        <appender-ref ref="USERCONTROLLER"/>
+    </logger>
+
+</configuration>
