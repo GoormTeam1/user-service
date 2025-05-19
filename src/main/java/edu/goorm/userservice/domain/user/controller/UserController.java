@@ -42,43 +42,53 @@ public class UserController {
   public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequestDto userSignupRequestDto,
       HttpServletRequest request) {
     userService.signup(userSignupRequestDto);
+
     CustomLogger.logRequest(
-        "login",
-        "/signup",
-        "Post",
+        "USER_SIGNUP",
+        "/api/user/signup",
+        "POST",
         null,
-        "{"
-            + "userEmail : " + userSignupRequestDto.getEmail() + "}",
+        String.format("{\"userEmail\": \"%s\"}", userSignupRequestDto.getEmail()),
         request
     );
+
     return ResponseEntity.ok(
         ApiResponse.success(HttpStatus.CREATED, "회원가입 성공", null));
   }
 
   @PostMapping("/login")
-  public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto request,
-      HttpServletResponse response) {
-    TokenDto tokenDto = userService.login(request);
+  public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto requestDto,
+      HttpServletResponse response,
+      HttpServletRequest request) {
+    TokenDto tokenDto = userService.login(requestDto);
     AccessTokenDto accessTokenDto = new AccessTokenDto(tokenDto.getAccessToken());
 
-    // HttpOnly 쿠키로 설정
     ResponseCookie cookie = ResponseCookie.from("token", tokenDto.getRefreshToken())
         .httpOnly(true)
         .path("/")
-        .maxAge(86400) // 1 day
+        .maxAge(86400)
         .sameSite("Strict")
-        .secure(false) // prod에서는 true
+        .secure(false)
         .build();
 
     response.addHeader("Set-Cookie", cookie.toString());
+
+    CustomLogger.logRequest(
+        "USER_LOGIN",
+        "/api/user/login",
+        "POST",
+        null,
+        String.format("{\"userEmail\": \"%s\"}", requestDto.getEmail()),
+        request
+    );
 
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "로그인 성공", accessTokenDto));
   }
 
   @GetMapping("/me")
-  public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) {
+  public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal UserDetails userDetails,
+      HttpServletRequest request) {
     String email = userDetails.getUsername();
-    System.out.println(email);
     if (email == null || email.isBlank()) {
       throw new BusinessException(ErrorCode.NO_AUTH_HEADER);
     }
@@ -86,51 +96,92 @@ public class UserController {
     User user = userService.findByEmail(email);
     List<Category> categoryList = userService.findInterestByUserId(user.getUserId());
 
+    CustomLogger.logRequest(
+        "FETCH_USER_INFO",
+        "/api/user/me",
+        "GET",
+        email,
+        null,
+        request
+    );
+
     UserInfoResponseDto response = new UserInfoResponseDto(user, categoryList);
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.CREATED, "회원 정보 불러오기 성공", response));
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<?> logout(HttpServletResponse response) {
-    // 쿠키 만료: maxAge = 0
+  public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request) {
     ResponseCookie cookie = ResponseCookie.from("token", "")
         .httpOnly(true)
         .path("/")
         .maxAge(0)
         .sameSite("Strict")
-        .secure(false) // 배포 시 true
+        .secure(false)
         .build();
 
     response.addHeader("Set-Cookie", cookie.toString());
+
+    CustomLogger.logRequest(
+        "USER_LOGOUT",
+        "/api/user/logout",
+        "POST",
+        null,
+        null,
+        request
+    );
 
     return ResponseEntity.ok("로그아웃 성공");
   }
 
   @PutMapping("/interests")
   public ResponseEntity<?> updateInterests(@AuthenticationPrincipal UserDetails userDetails,
-      @RequestBody
-      CategoryListRequestDto categoryListRequestDto) {
-
+      @RequestBody CategoryListRequestDto categoryListRequestDto,
+      HttpServletRequest request) {
     String email = userDetails.getUsername();
     userService.updateInterests(email, categoryListRequestDto);
+
+    CustomLogger.logRequest(
+        "UPDATE_INTERESTS",
+        "/api/user/interests",
+        "PUT",
+        email,
+        categoryListRequestDto.toString(),
+        request
+    );
 
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "관심 카테고리 변경 성공", null));
   }
 
   @PatchMapping("/level")
   public ResponseEntity<?> updateLevel(@AuthenticationPrincipal UserDetails userDetails,
-      @RequestBody
-      LevelRequestDto levelRequestDto) {
+      @RequestBody LevelRequestDto levelRequestDto,
+      HttpServletRequest request) {
     String email = userDetails.getUsername();
     userService.updateLevel(email, levelRequestDto.getLevel());
+
+    CustomLogger.logRequest(
+        "UPDATE_LEVEL",
+        "/api/user/level",
+        "PATCH",
+        email,
+        String.format("{\"newLevel\": \"%s\"}", levelRequestDto.getLevel()),
+        request
+    );
 
     return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, "난이도 변경 성공", null));
   }
 
   @GetMapping("/internal/find-id-by-email")
-  Long getUserIdByEmail(@RequestHeader("X-USER-EMAIL") String email) {
+  Long getUserIdByEmail(@RequestHeader("X-USER-EMAIL") String email, HttpServletRequest request) {
+    CustomLogger.logRequest(
+        "FIND_USER_ID",
+        "/api/user/internal/find-id-by-email",
+        "GET",
+        email,
+        null,
+        request
+    );
     return userService.findByEmail(email).getUserId();
   }
 
-  ;
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- ✅ Spring Boot 기본 콘솔 스타일 유지 -->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- ✅ 로그 파일 저장은 따로 설정 -->
+    <appender name="USERCONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/userController.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/userController.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ✅ 루트 로거는 Console만 유지 (Spring Boot 기본 스타일 자동 적용) -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- ✅ UserController 전용 로그 파일 유지 -->
+    <logger level="INFO"
+      name="edu.goorm.userservice.domain.user.controller.UserController"
+      additivity="false">
+        <appender-ref ref="USERCONTROLLER"/>
+    </logger>
+
+</configuration>
+
