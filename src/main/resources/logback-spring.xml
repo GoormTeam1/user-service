@@ -1,32 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- ✅ Spring Boot 기본 콘솔 스타일 유지 -->
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <!-- ✅ 로그 파일 저장은 따로 설정 -->
+    <!-- ✅ UserController 로그 파일 (20분 단위처럼 분할) -->
     <appender name="USERCONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/userController.log</file>
+        <file>logs/user-service/userController.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/userController.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <fileNamePattern>logs/user-service/userController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+            <maxHistory>90</maxHistory> <!-- 약 하루 3개 x 24 = 72 → 90개까지 보관 -->
         </rollingPolicy>
         <encoder>
-            <pattern>%msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- ✅ 루트 로거는 Console만 유지 (Spring Boot 기본 스타일 자동 적용) -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+    <!-- ✅ AuthController 로그 파일 (20분 단위처럼 분할) -->
+    <appender name="AUTHCONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/user-service/authController.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/user-service/authController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-    <!-- ✅ UserController 전용 로그 파일 유지 -->
+    <!-- ✅ UserController 로거 -->
     <logger level="INFO"
       name="edu.goorm.userservice.domain.user.controller.UserController"
       additivity="false">
         <appender-ref ref="USERCONTROLLER"/>
     </logger>
 
-</configuration>
+    <!-- ✅ AuthController 로거 -->
+    <logger level="INFO"
+      name="edu.goorm.userservice.domain.auth.controller.AuthController"
+      additivity="false">
+        <appender-ref ref="AUTHCONTROLLER"/>
+    </logger>
 
+    <!-- ✅ 루트 로거: 콘솔 출력 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>
