@@ -5,9 +5,9 @@
 
     <!-- ✅ UserController 로그 파일 (20분 단위처럼 분할) -->
     <appender name="USERCONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/user-service/userController.log</file>
+        <file>../logs/service/user-service/userController.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/user-service/userController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+            <fileNamePattern>../logs/service/user-service/userController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
             <maxHistory>90</maxHistory> <!-- 약 하루 3개 x 24 = 72 → 90개까지 보관 -->
         </rollingPolicy>
         <encoder>
@@ -17,9 +17,9 @@
 
     <!-- ✅ AuthController 로그 파일 (20분 단위처럼 분할) -->
     <appender name="AUTHCONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/user-service/authController.log</file>
+        <file>../logs/service/user-service/authController.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/user-service/authController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+            <fileNamePattern>../logs/service/user-service/authController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
             <maxHistory>90</maxHistory>
         </rollingPolicy>
         <encoder>
