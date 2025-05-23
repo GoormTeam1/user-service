@@ -3,45 +3,56 @@
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <!-- ✅ UserController 로그 파일 (20분 단위처럼 분할) -->
-    <appender name="USERCONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>../logs/service/user-service/userController.log</file>
+    <!-- ✅ info 로그 (JSON 형식) -->
+    <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../logs/service/user-service/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/service/user-service/userController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
-            <maxHistory>90</maxHistory> <!-- 약 하루 3개 x 24 = 72 → 90개까지 보관 -->
+            <fileNamePattern>../logs/service/user-service/info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%msg%n</Pattern>
         </encoder>
     </appender>
 
-    <!-- ✅ AuthController 로그 파일 (20분 단위처럼 분할) -->
-    <appender name="AUTHCONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>../logs/service/user-service/authController.log</file>
+    <!-- ✅ error 로그 (JSON 형식) -->
+    <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../logs/service/user-service/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/service/user-service/authController.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
-            <maxHistory>90</maxHistory>
+            <fileNamePattern>../logs/service/user-service/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%msg%n</Pattern>
         </encoder>
     </appender>
 
-    <!-- ✅ UserController 로거 -->
-    <logger level="INFO"
-      name="edu.goorm.userservice.domain.user.controller.UserController"
-      additivity="false">
-        <appender-ref ref="USERCONTROLLER"/>
+    <!-- ✅ external 로그 (Kafka 등 외부 시스템 연동) -->
+    <appender name="EXTERNAL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../logs/service/user-service/external.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>../logs/service/user-service/external.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- ✅ 각각의 로거에 Appender 연결 -->
+    <logger name="infoLogger" level="INFO" additivity="false">
+        <appender-ref ref="INFO_LOG"/>
     </logger>
 
-    <!-- ✅ AuthController 로거 -->
-    <logger level="INFO"
-      name="edu.goorm.userservice.domain.auth.controller.AuthController"
-      additivity="false">
-        <appender-ref ref="AUTHCONTROLLER"/>
+    <logger name="errorLogger" level="ERROR" additivity="false">
+        <appender-ref ref="ERROR_LOG"/>
     </logger>
 
-    <!-- ✅ 루트 로거: 콘솔 출력 -->
+    <logger name="externalLogger" level="INFO" additivity="false">
+        <appender-ref ref="EXTERNAL_LOG"/>
+    </logger>
+
+    <!-- ✅ 루트 로거는 콘솔만 유지 -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
