@@ -12,13 +12,21 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+
+  hikari:
+    maximum-pool-size: 10       # 최대 커넥션 수 제한
+    minimum-idle: 1             # 최소 유휴 커넥션 수
+    idle-timeout: 30000         # 30초 이상 유휴 상태면 커넥션 반환 (ms)
+    max-lifetime: 900000        # 5분 지나면 커넥션 교체 (ms)
+    connection-timeout: 5000    # 5초 내에 커넥션 못 얻으면 예외 (ms)
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
-  
+
 jwt:
   secret: ${JWT_SECRET}
   accessToken :
