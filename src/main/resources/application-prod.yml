@@ -21,11 +21,10 @@ spring:
     connection-timeout: 5000    # 5초 내에 커넥션 못 얻으면 예외 (ms)
 
   kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
+    consumer:
+      group-id: news-group
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      auto-offset-reset: earliest
 
 jwt:
   secret: ${JWT_SECRET}
