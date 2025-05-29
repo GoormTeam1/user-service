@@ -5,8 +5,13 @@ APP_NAME="user-service"
 JAR_NAME="user.jar"
 APP_DIR="/home/ubuntu/backend/$APP_NAME"
 LOG_FILE="$APP_DIR/$APP_NAME.log"
+LOG_DIR="/home/ubuntu/backend/logs/service/$APP_NAME"
 
 echo "▶ [$APP_NAME] 배포 시작"
+
+# ✅ 로그 디렉토리 생성
+echo "▶ 로그 디렉토리 생성 중..."
+mkdir -p "$LOG_DIR"
 
 # ✅ 기존 프로세스 종료
 echo "▶ 기존 프로세스 종료 중..."
