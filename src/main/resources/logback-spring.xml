@@ -7,7 +7,7 @@
     <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>../logs/service/user-service/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/service/user-service/info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -19,7 +19,7 @@
     <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>../logs/service/user-service/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/service/user-service/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -31,7 +31,7 @@
     <appender name="EXTERNAL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>../logs/service/user-service/external.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/service/user-service/external.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/external.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
