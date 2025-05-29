@@ -88,12 +88,7 @@ public class UserService {
 
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
 
-    try {
-      kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
-    } catch (Exception e) {
-      // 로그만 남기고 예외 전파하지 않음
-      log.warn("Kafka 전송 실패: {}", e.getMessage());
-    }
+    kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
 
     // 벌크 insert할 UserInterest 리스트 생성
     List<UserInterest> interests = categoryList.stream()
