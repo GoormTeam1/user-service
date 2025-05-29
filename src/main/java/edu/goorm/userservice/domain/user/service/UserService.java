@@ -24,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class UserService {
 
@@ -32,7 +31,21 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final UserInterestRepository userInterestRepository;
-  private final KafkaProducerService kafkaProducerService;
+  private KafkaProducerService kafkaProducerService;
+
+  public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider,
+      UserInterestRepository userInterestRepository, KafkaProducerService kafkaProducerService) {
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.jwtTokenProvider = jwtTokenProvider;
+    this.userInterestRepository = userInterestRepository;
+    try {
+      this.kafkaProducerService = kafkaProducerService;
+    } catch (Exception e) {
+      kafkaProducerService = null;
+      log.warn("Kafka 전송 실패: {}", e.getMessage());
+    }
+  }
 
   public User signup(UserSignupRequestDto request) {
     if (userRepository.findByUserEmail(request.getEmail()).isPresent()) {
@@ -53,7 +66,8 @@ public class UserService {
     List<UserInterest> interests = request.getCategoryList().stream()
         .map(category -> new UserInterest(user.getUserId(), category))
         .toList();
-    kafkaProducerService.sendSignupEvent(user,request.getCategoryList());
+
+    kafkaProducerService.sendSignupEvent(user, request.getCategoryList());
 
     userInterestRepository.saveAll(interests);
 
@@ -69,7 +83,7 @@ public class UserService {
     }
 
     return new TokenDto(jwtTokenProvider.generateAccessToken(
-        user.getUserEmail(),user.getUserName()), jwtTokenProvider.generateRefreshToken(user.getUserEmail()));
+        user.getUserEmail(), user.getUserName()), jwtTokenProvider.generateRefreshToken(user.getUserEmail()));
   }
 
   public User findByEmail(String email) {
@@ -88,7 +102,12 @@ public class UserService {
 
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
 
-    kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+    try {
+      kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+    } catch (Exception e) {
+      // 로그만 남기고 예외 전파하지 않음
+      log.warn("Kafka 전송 실패: {}", e.getMessage());
+    }
 
     // 벌크 insert할 UserInterest 리스트 생성
     List<UserInterest> interests = categoryList.stream()
