@@ -8,7 +8,7 @@ pipeline {
         REMOTE_PATH = "/home/ubuntu/backend/$SERVICE_NAME"
         SLACK_WEBHOOK = credentials('slack-webhook') // Jenkins Credentials
         BUILD_URL = "${env.BUILD_URL}"
-        CD_JOB_URL = "https://jenkins.yourdomain.com/job/user-service-cd/build" // CD 수동 실행 링크
+        CD_JOB_URL = "http://3.39.204.251:8080/job/user-service-cd/build" // CD 수동 실행 링크
     }
 
     stages {
@@ -48,11 +48,11 @@ pipeline {
         success {
             script {
                 def message = """
-                :rocket: *[${SERVICE_NAME}]* 빌드 성공 및 EC2 업로드 완료
-                ▶ *JAR 및 start.sh 전송 완료됨*
-                🛠 *배포하려면 CD Job을 실행하세요*: <${CD_JOB_URL}|CD Job 실행 링크>
-                ➡️ *CI 로그 보기*: <${BUILD_URL}>
-                """
+:rocket: *[${SERVICE_NAME}]* 빌드 성공 및 EC2 업로드 완료
+▶ *JAR 및 start.sh 전송 완료됨*
+🛠 *배포하려면 CD Job을 실행하세요*: <${CD_JOB_URL}|CD Job 실행 링크>
+➡️ *CI 로그 보기*: <${BUILD_URL}>
+"""
                 sh """
                 curl -X POST -H 'Content-type: application/json' --data '{"text": "${message}"}' ${SLACK_WEBHOOK}
                 """
@@ -62,9 +62,9 @@ pipeline {
         failure {
             script {
                 def message = """
-                :fire: *[${SERVICE_NAME}]* CI 실패!
-                ➡️ *로그 보기*: <${BUILD_URL}>
-                """
+:fire: *[${SERVICE_NAME}]* CI 실패!
+➡️ *로그 보기*: <${BUILD_URL}>
+"""
                 sh """
                 curl -X POST -H 'Content-type: application/json' --data '{"text": "${message}"}' ${SLACK_WEBHOOK}
                 """
