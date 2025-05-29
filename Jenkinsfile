@@ -27,7 +27,7 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST 'mkdir -p $REMOTE_PATH'
                     scp -o StrictHostKeyChecking=no build/libs/*.jar $EC2_USER@$EC2_HOST:$REMOTE_PATH/user.jar
-                    scp -o StrictHostKeyChecking=no scripts/start.sh $EC2_USER@$EC2_HOST:$REMOTE_PATH/start.sh
+                    scp -o StrictHostKeyChecking=no start.sh $EC2_USER@$EC2_HOST:$REMOTE_PATH/start.sh
                     ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "chmod +x $REMOTE_PATH/start.sh && $REMOTE_PATH/start.sh"
                     """
 
