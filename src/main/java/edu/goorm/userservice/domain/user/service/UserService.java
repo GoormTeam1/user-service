@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
 
   private final UserRepository userRepository;
@@ -33,19 +34,19 @@ public class UserService {
   private final UserInterestRepository userInterestRepository;
   private KafkaProducerService kafkaProducerService;
 
-  public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider,
-      UserInterestRepository userInterestRepository, KafkaProducerService kafkaProducerService) {
-    this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
-    this.jwtTokenProvider = jwtTokenProvider;
-    this.userInterestRepository = userInterestRepository;
-    try {
-      this.kafkaProducerService = kafkaProducerService;
-    } catch (Exception e) {
-      kafkaProducerService = null;
-      log.warn("Kafka 전송 실패: {}", e.getMessage());
-    }
-  }
+//  public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider,
+//      UserInterestRepository userInterestRepository, KafkaProducerService kafkaProducerService) {
+//    this.userRepository = userRepository;
+//    this.passwordEncoder = passwordEncoder;
+//    this.jwtTokenProvider = jwtTokenProvider;
+//    this.userInterestRepository = userInterestRepository;
+//    try {
+//      this.kafkaProducerService = kafkaProducerService;
+//    } catch (Exception e) {
+//      kafkaProducerService = null;
+//      log.warn("Kafka 전송 실패: {}", e.getMessage());
+//    }
+//  }
 
   public User signup(UserSignupRequestDto request) {
     if (userRepository.findByUserEmail(request.getEmail()).isPresent()) {
@@ -102,12 +103,9 @@ public class UserService {
 
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
 
-    try {
-      kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
-    } catch (Exception e) {
-      // 로그만 남기고 예외 전파하지 않음
-      log.warn("Kafka 전송 실패: {}", e.getMessage());
-    }
+
+    kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+
 
     // 벌크 insert할 UserInterest 리스트 생성
     List<UserInterest> interests = categoryList.stream()
