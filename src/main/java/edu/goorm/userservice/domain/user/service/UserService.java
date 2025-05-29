@@ -86,8 +86,8 @@ public class UserService {
 
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
 
-    // Kafka 이벤트 전송
-    kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+//    // Kafka 이벤트 전송
+//    kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
 
     // 벌크 insert할 UserInterest 리스트 생성
     List<UserInterest> interests = categoryList.stream()
