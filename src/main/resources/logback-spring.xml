@@ -5,7 +5,7 @@
 
     <!-- ✅ info 로그 (JSON 형식) -->
     <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/home/ubuntu/backend/logs/service/user-service/info.%d{yyyy-MM-dd}.log</file>
+        <file>/home/ubuntu/backend/logs/service/user-service/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
@@ -17,7 +17,7 @@
 
     <!-- ✅ error 로그 (JSON 형식) -->
     <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/home/ubuntu/backend/logs/service/user-service/error.%d{yyyy-MM-dd}.log</file>
+        <file>/home/ubuntu/backend/logs/service/user-service/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
@@ -29,7 +29,7 @@
 
     <!-- ✅ external 로그 (Kafka 등 외부 시스템 연동) -->
     <appender name="EXTERNAL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/home/ubuntu/backend/logs/service/user-service/external.%d{yyyy-MM-dd}.log</file>
+        <file>/home/ubuntu/backend/logs/service/user-service/external.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/external.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
