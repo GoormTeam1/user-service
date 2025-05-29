@@ -32,7 +32,7 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final UserInterestRepository userInterestRepository;
-  private KafkaProducerService kafkaProducerService;
+  private final KafkaProducerService kafkaProducerService;
 
 //  public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider,
 //      UserInterestRepository userInterestRepository, KafkaProducerService kafkaProducerService) {
