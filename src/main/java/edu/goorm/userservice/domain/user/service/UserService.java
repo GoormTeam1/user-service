@@ -19,11 +19,13 @@ import edu.goorm.userservice.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
   private final UserRepository userRepository;
@@ -86,8 +88,12 @@ public class UserService {
 
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
 
-    // Kafka 이벤트 전송
-    kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+    try {
+      kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+    } catch (Exception e) {
+      // 로그만 남기고 예외 전파하지 않음
+      log.warn("Kafka 전송 실패: {}", e.getMessage());
+    }
 
     // 벌크 insert할 UserInterest 리스트 생성
     List<UserInterest> interests = categoryList.stream()
