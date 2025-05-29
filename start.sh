@@ -3,7 +3,7 @@
 # ✅ 설정값
 APP_NAME="user-service"
 JAR_NAME="user.jar"
-APP_DIR="/home/redhouse/$APP_NAME"
+APP_DIR="/home/ubuntu/backend/$APP_NAME"
 LOG_FILE="$APP_DIR/$APP_NAME.log"
 
 echo "▶ [$APP_NAME] 배포 시작"

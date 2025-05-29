@@ -5,7 +5,7 @@ pipeline {
         SERVICE_NAME = "user-service"
         EC2_USER = "ubuntu"
         EC2_HOST = "10.0.2.225"
-        REMOTE_PATH = "/home/ubuntu/$SERVICE_NAME"
+        REMOTE_PATH = "/home/ubuntu/backend/$SERVICE_NAME"
     }
 
     stages {
