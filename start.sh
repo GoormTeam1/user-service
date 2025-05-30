@@ -8,7 +8,7 @@ LOG_DIR="/home/ubuntu/backend/logs/service/$APP_NAME"
 LOG_FILE="$LOG_DIR/$APP_NAME.log"
 BACKUP_JAR="$APP_DIR/${JAR_NAME}.bak"
 ENV_FILE="$APP_DIR/../.env"
-PORT=8080
+PORT=8081
 HEALTH_URL="http://localhost:$PORT/actuator/health"
 
 echo "▶ [$APP_NAME] 배포 시작"
