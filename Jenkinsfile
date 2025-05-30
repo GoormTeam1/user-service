@@ -67,16 +67,20 @@ pipeline {
                                     result.contains("ROLLBACK_FAILED") ? ":fire: *[${SERVICE_NAME}]* 배포 및 롤백 모두 실패!" :
                                             ":grey_question: *[${SERVICE_NAME}]* 배포 상태 미확인!"
 
-                    def payload = """
-{
-  "text": "${statusMessage}\\n➡️ <${BUILD_URL}|Jenkins 로그 보기>\\n\\n📄 *start.sh 로그 (최근 20줄)*:\\n\\`\\`\\`\\n${log}\\n\\`\\`\\`"
-}
-"""
+                    def fullMessage = """${statusMessage}
+➡️ <${BUILD_URL}|Jenkins 로그 보기>
 
+📄 *start.sh 로그 (최근 20줄)*:
+\`\`\`
+${log}
+\`\`\`"""
+
+                    def payload = groovy.json.JsonOutput.toJson([text: fullMessage])
                     writeFile file: 'slack-payload.json', text: payload
                     sh 'curl -X POST -H "Content-type: application/json" --data @slack-payload.json "$WEBHOOK_URL"'
                 }
             }
         }
     }
+
 }
