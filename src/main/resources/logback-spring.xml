@@ -67,7 +67,6 @@
 
     <!-- ✅ 루트 로거: 콘솔 + 공통 로그 파일 -->
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE_LOG"/>
     </root>
 
