@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <property name="LOG_TEMP" value="/home/ubuntu/backend/logs/service/user-service/" />
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
 
     <!-- ✅ info 로그 (JSON 형식) -->
     <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
