@@ -39,6 +39,11 @@ jwt:
 
 logging:
   config: classpath:logback-spring.xml
+  file:
+    path: /home/ubuntu/backend/logs/service/user-service
+  level:
+    root: info
+
 
 # 서버 포트 설정
 server:
