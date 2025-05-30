@@ -71,9 +71,9 @@ pipeline {
 ➡️ <${BUILD_URL}|Jenkins 로그 보기>
 
 📄 *start.sh 로그 (최근 20줄)*:
-\`\`\`
+---
 ${log}
-\`\`\`"""
+---"""
 
                     def payload = groovy.json.JsonOutput.toJson([text: fullMessage])
                     writeFile file: 'slack-payload.json', text: payload
