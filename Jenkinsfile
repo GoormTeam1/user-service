@@ -46,8 +46,9 @@ pipeline {
                         echo output
 
                         def lines = output.readLines()
-                        env.START_LOG_TAIL = lines.takeRight(20).join("\\n")
-                        env.START_RESULT = lines.find { it.contains('[RESULT]') } ?: '[RESULT] UNKNOWN'
+                        env.START_LOG_TAIL = lines.takeRight(20).collect { it.replace('"', '\\"') }.join("\\n")
+                        def resultLine = lines.find { it.contains('[RESULT]') } ?: '[RESULT] UNKNOWN'
+                        env.START_RESULT = resultLine
                     }
                 }
             }
@@ -56,43 +57,24 @@ pipeline {
 
     post {
         always {
-            script {
-                def result = env.START_RESULT ?: '[RESULT] UNKNOWN'
-                def log = env.START_LOG_TAIL ?: '(start.sh 로그 없음)'
+            withCredentials([string(credentialsId: 'slack-webhook', variable: 'WEBHOOK_URL')]) {
+                script {
+                    def result = env.START_RESULT ?: '[RESULT] UNKNOWN'
+                    def log = env.START_LOG_TAIL ?: '(start.sh 로그 없음)'
 
-                def statusMessage = ""
-                if (result.contains("SUCCESS")) {
-                    statusMessage = ":rocket: *[${SERVICE_NAME}]* 배포 성공!"
-                } else if (result.contains("ROLLBACK_SUCCESS")) {
-                    statusMessage = ":warning: *[${SERVICE_NAME}]* 배포 실패 → 롤백 성공!"
-                } else if (result.contains("ROLLBACK_FAILED")) {
-                    statusMessage = ":fire: *[${SERVICE_NAME}]* 배포 및 롤백 모두 실패!"
-                } else {
-                    statusMessage = ":grey_question: *[${SERVICE_NAME}]* 배포 상태 미확인!"
-                }
+                    def statusMessage = result.contains("SUCCESS") ? ":rocket: *[${SERVICE_NAME}]* 배포 성공!" :
+                            result.contains("ROLLBACK_SUCCESS") ? ":warning: *[${SERVICE_NAME}]* 배포 실패 → 롤백 성공!" :
+                                    result.contains("ROLLBACK_FAILED") ? ":fire: *[${SERVICE_NAME}]* 배포 및 롤백 모두 실패!" :
+                                            ":grey_question: *[${SERVICE_NAME}]* 배포 상태 미확인!"
 
-                def rawMessage = """
-${statusMessage}
-➡️ <${BUILD_URL}|Jenkins 로그 보기>
-
-📄 *start.sh 로그 (최근 20줄)*:
-\\`\\`\\`
-${log}
-\\`\\`\\`
+                    def payload = """
+{
+  "text": "${statusMessage}\\n➡️ <${BUILD_URL}|Jenkins 로그 보기>\\n\\n📄 *start.sh 로그 (최근 20줄)*:\\n\\`\\`\\`\\n${log}\\n\\`\\`\\`"
+}
 """
 
-                def safeMessage = rawMessage
-                        .replace("\\", "\\\\")
-                        .replace("\"", "\\\"")
-
-                withCredentials([string(credentialsId: 'slack-webhook', variable: 'WEBHOOK_URL')]) {
-                    sh """
-                    cat <<EOF | curl -X POST -H 'Content-type: application/json' -d @- "\$WEBHOOK_URL"
-                    {
-                      "text": "${safeMessage}"
-                    }
-EOF
-                    """
+                    writeFile file: 'slack-payload.json', text: payload
+                    sh 'curl -X POST -H "Content-type: application/json" --data @slack-payload.json "$WEBHOOK_URL"'
                 }
             }
         }
