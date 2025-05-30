@@ -8,19 +8,37 @@ pipeline {
         REMOTE_PATH = "/home/ubuntu/backend/${SERVICE_NAME}"
         SLACK_WEBHOOK = credentials('slack-webhook')
         BUILD_URL = "${env.BUILD_URL}"
-        APP_PORT = "8080"
     }
 
     stages {
-        stage('Start Application') {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/GoormTeam1/user-service'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh './gradlew clean test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './gradlew clean bootJar'
+            }
+        }
+
+        stage('Deploy') {
             steps {
                 sshagent(['PRIVATE_EC2_KEY']) {
                     script {
                         def output = sh(
                                 script: """
-                                ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "\
-                                  chmod +x $REMOTE_PATH/start.sh && \
-                                  $REMOTE_PATH/start.sh"
+                                ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST 'mkdir -p $REMOTE_PATH'
+                                scp -o StrictHostKeyChecking=no build/libs/*.jar $EC2_USER@$EC2_HOST:$REMOTE_PATH/user.jar
+                                scp -o StrictHostKeyChecking=no start.sh $EC2_USER@$EC2_HOST:$REMOTE_PATH/start.sh
+                                ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "chmod +x $REMOTE_PATH/start.sh && $REMOTE_PATH/start.sh"
                             """,
                                 returnStdout: true
                         ).trim()
@@ -59,6 +77,7 @@ pipeline {
                 def message = """
 ${statusMessage}
 ➡️ <${BUILD_URL}|Jenkins 로그 보기>
+
 📄 *start.sh 로그 (최근 20줄)*:
 \\`\\`\\`
 ${log}
