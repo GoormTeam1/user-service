@@ -46,7 +46,7 @@ pipeline {
                         echo output
 
                         def lines = output.readLines()
-                        env.START_LOG_TAIL = lines.takeRight(20).collect { it.replace('"', '\\"') }.join("\\n")
+                        env.START_LOG_TAIL = lines.takeRight(20).collect { it.replace('"', '\\"') }.join("\n")
                         def resultLine = lines.find { it.contains('[RESULT]') } ?: '[RESULT] UNKNOWN'
                         env.START_RESULT = resultLine
                     }
