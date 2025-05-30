@@ -47,7 +47,7 @@ nohup java -jar "$APP_DIR/$JAR_NAME" > "$LOG_FILE" 2>&1 &
 echo "⏳ 헬스 체크 중..."
 success=false
 for i in {1..10}; do
-  sleep 10
+  sleep 5
   STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL")
   if [ "$STATUS" == "200" ]; then
     success=true
@@ -75,7 +75,7 @@ else
 
     # 롤백 후 헬스 체크
     for i in {1..10}; do
-      sleep 10
+      sleep 5
       STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL")
       if [ "$STATUS" == "200" ]; then
         echo "✅ 롤백 성공"
