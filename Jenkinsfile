@@ -6,7 +6,6 @@ pipeline {
         EC2_USER = "ubuntu"
         EC2_HOST = "10.0.2.225"
         REMOTE_PATH = "/home/ubuntu/backend/${SERVICE_NAME}"
-        SLACK_WEBHOOK = credentials('slack-webhook')
         BUILD_URL = "${env.BUILD_URL}"
     }
 
@@ -48,9 +47,7 @@ pipeline {
 
                         def lines = output.readLines()
                         env.START_LOG_TAIL = lines.takeRight(20).join("\\n")
-
-                        def resultLine = lines.find { it.contains('[RESULT]') } ?: '[RESULT] UNKNOWN'
-                        env.START_RESULT = resultLine
+                        env.START_RESULT = lines.find { it.contains('[RESULT]') } ?: '[RESULT] UNKNOWN'
                     }
                 }
             }
@@ -74,7 +71,7 @@ pipeline {
                     statusMessage = ":grey_question: *[${SERVICE_NAME}]* 배포 상태 미확인!"
                 }
 
-                def message = """
+                def rawMessage = """
 ${statusMessage}
 ➡️ <${BUILD_URL}|Jenkins 로그 보기>
 
@@ -84,9 +81,19 @@ ${log}
 \\`\\`\\`
 """
 
-                sh """
-                curl -X POST -H 'Content-type: application/json' --data '{"text": "${message}"}' ${SLACK_WEBHOOK}
-                """
+                def safeMessage = rawMessage
+                        .replace("\\", "\\\\")
+                        .replace("\"", "\\\"")
+
+                withCredentials([string(credentialsId: 'slack-webhook', variable: 'WEBHOOK_URL')]) {
+                    sh """
+                    cat <<EOF | curl -X POST -H 'Content-type: application/json' -d @- "\$WEBHOOK_URL"
+                    {
+                      "text": "${safeMessage}"
+                    }
+EOF
+                    """
+                }
             }
         }
     }
