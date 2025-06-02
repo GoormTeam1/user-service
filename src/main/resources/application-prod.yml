@@ -37,6 +37,14 @@ jwt:
   refreshToken:
     expiration : ${REFRESH_EXPIRATION}
 
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: /home/ubuntu/backend/logs/service/user-service
+    name: /home/ubuntu/backend/logs/service/user-service/spring.log
+  level:
+    root: info
+
 
 # 서버 포트 설정
 server:
