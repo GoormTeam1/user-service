@@ -17,11 +17,6 @@
 
   </appender>
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-      <file>/home/ubuntu/backend/logs/service/user-service/console.log</file>
-      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-          <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/console.%d{yyyy-MM-dd}.log</fileNamePattern>
-          <maxHistory>30</maxHistory>
-      </rollingPolicy>
     <encoder>
       <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
     </encoder>
