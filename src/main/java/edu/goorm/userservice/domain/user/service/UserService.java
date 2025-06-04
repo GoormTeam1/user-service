@@ -48,6 +48,7 @@ public class UserService {
 //    }
 //  }
 
+  @Transactional
   public User signup(UserSignupRequestDto request) {
     if (userRepository.findByUserEmail(request.getEmail()).isPresent()) {
       throw new BusinessException(ErrorCode.DUPLICATE_RESOURCE);
