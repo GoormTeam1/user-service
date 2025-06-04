@@ -107,6 +107,8 @@ public class UserService {
 
     // 기존 관심 카테고리 삭제
     userInterestRepository.deleteAllByIdUserId(userId);
+    userInterestRepository.flush();
+
 
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
 
