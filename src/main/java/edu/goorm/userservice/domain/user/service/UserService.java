@@ -69,7 +69,13 @@ public class UserService {
         .map(category -> new UserInterest(user.getUserId(), category))
         .toList();
 
-    kafkaProducerService.sendSignupEvent(user, request.getCategoryList());
+    // ✅ Kafka는 예외를 삼켜서 DB 트랜잭션에 영향 주지 않도록
+    try {
+      kafkaProducerService.sendSignupEvent(user, request.getCategoryList());
+    } catch (Exception e) {
+      log.warn("Kafka 전송 실패. 사용자 ID: {}, 사유: {}", user.getUserId(), e.getMessage());
+      // 필요 시 DB에 실패 로그 저장 or Dead Letter Queue로 재처리
+    }
 
     userInterestRepository.saveAll(interests);
 
@@ -105,7 +111,13 @@ public class UserService {
     List<Category> categoryList = categoryListRequestDto.getCategoryList();
 
 
-    kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+    // ✅ Kafka는 예외를 삼켜서 DB 트랜잭션에 영향 주지 않도록
+    try {
+      kafkaProducerService.sendUpdateInterestEvent(user, categoryList);
+    } catch (Exception e) {
+      log.warn("Kafka 전송 실패. 사용자 ID: {}, 사유: {}", user.getUserId(), e.getMessage());
+      // 필요 시 DB에 실패 로그 저장 or Dead Letter Queue로 재처리
+    }
 
 
     // 벌크 insert할 UserInterest 리스트 생성
