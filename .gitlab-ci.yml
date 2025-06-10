@@ -1,0 +1,29 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+build:
+  stage: build
+  image: gradle:7.5-jdk17
+  script:
+    - gradle clean build
+  artifacts:
+    paths:
+      - build/libs/
+    expire_in: 1 hour
+
+test:
+  stage: test
+  image: gradle:7.5-jdk17
+  script:
+    - gradle test
+
+deploy:
+  stage: deploy
+  image: alpine
+  script:
+    - echo "👉 실제 배포 스크립트는 나중에 추가 예정입니다"
