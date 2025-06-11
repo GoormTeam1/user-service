@@ -5,6 +5,15 @@ stages:
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
+# --- 추가된 부분 ---
+# 반복되는 before_script를 템플릿으로 정의 (YAML Anchor)
+.gradle_before_script: &gradle_before_script
+  before_script:
+    - echo "Creating gradle home directory and setting permissions..."
+    - mkdir -p /home/gradle/.gradle/caches
+    - chown -R root:root /home/gradle
+# -----------------
+
 default:
   tags:
     - spring-runner
@@ -12,6 +21,7 @@ default:
 build:
   stage: build
   image: gradle:7.5-jdk17
+  <<: *gradle_before_script # 템플릿 적용
   script:
     - gradle clean build
   artifacts:
@@ -24,6 +34,7 @@ build:
 test:
   stage: test
   image: gradle:7.5-jdk17
+  <<: *gradle_before_script # 템플릿 적용
   script:
     - gradle test
   rules:
