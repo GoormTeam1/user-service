@@ -20,7 +20,7 @@ default:
 
 build:
   stage: build
-  image: gradle:7.5-jdk17
+  image: gradle:8.8-jdk17
   <<: *gradle_before_script # 템플릿 적용
   script:
     - gradle clean build
