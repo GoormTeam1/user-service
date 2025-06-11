@@ -49,7 +49,7 @@ sonarqube-check:
     # gradle sonar 명령어에 '누가, 어디로' 접속할지 명확하게 알려줌
     - >
       gradle sonar
-      -Dsonar.projectKey=$SONAR_PROJECT_KEY
+      -Dsonar.projectKey="user-service"
       -Dsonar.host.url=$SONAR_HOST_URL
       -Dsonar.token=$SONAR_TOKEN
       -Dsonar.java.binaries=build/classes/java/main
