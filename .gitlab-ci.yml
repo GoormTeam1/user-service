@@ -5,6 +5,8 @@ stages:
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  # 전역 변수로 SonarQube 프로젝트 키를 설정하면 더 깔끔합니다.
+  SONAR_PROJECT_KEY: "user-service"
 
 default:
   tags:
@@ -14,10 +16,14 @@ build:
   stage: build
   image: gradle:8.8-jdk17
   script:
-    - gradle clean build
+    # clean build를 실행하여 항상 새로운 빌드를 보장합니다.
+    - gradle clean build -x test
   artifacts:
+    # --- ★★★ 가장 중요한 수정 사항 ★★★ ---
+    # .jar 파일만 저장하는 대신, build/ 폴더 전체를 저장합니다.
+    # 이렇게 해야 컴파일된 .class 파일들이 sonarqube-check 작업으로 전달됩니다.
     paths:
-      - build/libs/
+      - build/
     expire_in: 1 hour
   rules:
     - if: '$CI_COMMIT_BRANCH == "cicd"'
@@ -27,33 +33,39 @@ test:
   image: gradle:8.8-jdk17
   script:
     - gradle test
+  artifacts:
+    # SonarQube가 테스트 결과를 분석할 수 있도록 테스트 리포트도 아티팩트로 전달합니다.
+    paths:
+      - build/reports/tests/test/
+    expire_in: 1 hour
   rules:
     - if: '$CI_COMMIT_BRANCH == "cicd"'
 
 sonarqube-check:
-  stage: sonarqube-check # 스테이지 이름 일치
+  stage: sonarqube-check
   image: gradle:8.8-jdk17
   variables:
-    # SonarQube 제공 코드의 변수들 (캐시 위치 지정, 전체 git 히스토리 fetch)
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
     GIT_DEPTH: "0"
   cache:
-    # SonarQube 제공 코드의 캐시 설정 (분석 속도 향상)
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
   dependencies:
-    - build  # build 작업의 아티팩트(build/ 폴더)를 가져옴
+    # build와 test 작업의 아티팩트를 모두 가져옵니다.
+    - build
+    - test
   script:
     - echo "Starting SonarQube scan..."
-    # gradle sonar 명령어에 '누가, 어디로' 접속할지 명확하게 알려줌
     - >
       gradle sonar
-      -Dsonar.projectKey="user-service"
+      -Dsonar.projectKey=$SONAR_PROJECT_KEY
       -Dsonar.host.url=$SONAR_HOST_URL
       -Dsonar.token=$SONAR_TOKEN
       -Dsonar.java.binaries=build/classes/java/main
+      # 테스트 리포트 경로를 추가하여 코드 커버리지 분석을 활성화합니다.
+      -Dsonar.junit.reportPaths=build/reports/tests/test
       -Dsonar.qualitygate.wait=true
-  allow_failure: false # true로 두면, 품질이 나빠도 파이프라인이 성공 처리되므로 false로 변경 권장
+  allow_failure: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "cicd"'
