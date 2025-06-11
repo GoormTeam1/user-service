@@ -11,6 +11,7 @@ sonar {
         property "sonar.projectKey", "user-service"
         property "sonar.qualitygate.wait", true
     }
+}
 
 group = 'edu.goorm'
 version = '0.0.1-SNAPSHOT'
