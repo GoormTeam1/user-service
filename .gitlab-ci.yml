@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - sonarqube-check
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
@@ -30,15 +31,29 @@ test:
     - if: '$CI_COMMIT_BRANCH == "cicd"'
 
 sonarqube-check:
+  stage: sonarqube-check # 스테이지 이름 일치
   image: gradle:8.8-jdk17
   variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+    # SonarQube 제공 코드의 변수들 (캐시 위치 지정, 전체 git 히스토리 fetch)
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
   cache:
+    # SonarQube 제공 코드의 캐시 설정 (분석 속도 향상)
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
-  script: gradle sonar
-  allow_failure: true
+  dependencies:
+    - build  # build 작업의 아티팩트(build/ 폴더)를 가져옴
+  script:
+    - echo "Starting SonarQube scan..."
+    # gradle sonar 명령어에 '누가, 어디로' 접속할지 명확하게 알려줌
+    - >
+      gradle sonar
+      -Dsonar.projectKey=$SONAR_PROJECT_KEY
+      -Dsonar.host.url=$SONAR_HOST_URL
+      -Dsonar.token=$SONAR_TOKEN
+      -Dsonar.java.binaries=build/classes/java/main
+      -Dsonar.qualitygate.wait=true
+  allow_failure: false # true로 두면, 품질이 나빠도 파이프라인이 성공 처리되므로 false로 변경 권장
   rules:
     - if: '$CI_COMMIT_BRANCH == "cicd"'
