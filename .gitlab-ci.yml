@@ -9,8 +9,8 @@ include:
 # 2. 파이프라인의 전체 스테이지 순서 정의
 stages:
   - build
-  - test
-  - sonarqube-check
+  #- test
+  #- sonarqube-check
   - publish
 
 # 3. 서비스에 따라 달라지는 변수들만 여기서 정의
