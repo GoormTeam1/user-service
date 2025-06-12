@@ -35,6 +35,9 @@ sonarqube-check:
     - if: '$CI_COMMIT_BRANCH == "main"'
 
 publish_and_scan_image:
-  extends: .publish_template
+  extends:
+    - .publish_template
+    - .slack_notification_template
+
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
