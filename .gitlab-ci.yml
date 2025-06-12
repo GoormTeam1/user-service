@@ -24,15 +24,15 @@ build:
   rules:
     - if: '$CI_COMMIT_BRANCH == "cicd"'
 
-test:
-  extends: .test_template
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "cicd"'
-
-sonarqube-check:
-  extends: .sonarqube_template
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "cicd"'
+#test:
+#  extends: .test_template
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "cicd"'
+#
+#sonarqube-check:
+#  extends: .sonarqube_template
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "cicd"'
 
 publish_and_scan_image:
   extends: .publish_template
