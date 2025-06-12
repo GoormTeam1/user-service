@@ -1,32 +1,43 @@
+# user-service/.gitlab-ci.yml
+
+# 1. 중앙 템플릿 파일 불러오기
+include:
+  - project: 'goorm-team1/main-templates' # 템플릿 프로젝트 경로
+    ref: main                          # 템플릿 프로젝트의 브랜치
+    file: '/gradle-ci-template.yml'    # 사용할 템플릿 파일명
+
+# 2. 파이프라인의 전체 스테이지 순서 정의
 stages:
   - build
   - test
-  - deploy
+  - sonarqube-check
+  - publish
 
+# 3. 서비스에 따라 달라지는 변수들만 여기서 정의
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  SONAR_PROJECT_KEY: "user-service"         # SonarQube 프로젝트 키는 서비스마다 다름
+  ECR_REPOSITORY_NAME: "newords-user"       # ECR 리포지토리 이름도 서비스마다 다름
 
-default:
-  tags:
-    - spring-runner
+# 4. 실제 실행할 작업들은 템플릿을 상속(extends)받아 정의
 build:
-  stage: build
-  image: gradle:7.5-jdk17
-  script:
-    - gradle clean build
-  artifacts:
-    paths:
-      - build/libs/
-    expire_in: 1 hour
+  extends: .build_template
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 test:
-  stage: test
-  image: gradle:7.5-jdk17
-  script:
-    - gradle test
+  extends: .test_template
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
-deploy:
-  stage: deploy
-  image: alpine
-  script:
-    - echo "👉 실제 배포 스크립트는 나중에 추가 예정입니다"
+sonarqube-check:
+  extends: .sonarqube_template
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+publish_and_scan_image:
+  extends:
+    - .publish_template
+    - .slack_notification_template
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
