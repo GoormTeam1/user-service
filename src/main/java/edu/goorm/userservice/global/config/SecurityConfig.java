@@ -29,7 +29,8 @@ public class SecurityConfig {
                             "/api/user/login",
                             "/api/user/signup",
                             "/api/auth/reissue",
-                            "/api/user/internal/**"  // 🔥 추천 서비스 등의 내부 요청을 허용할 경로
+                            "/api/user/internal/**",  // 🔥 추천 서비스 등의 내부 요청을 허용할 경로'
+                                "/actuator/health"
                     ).permitAll()
                     .anyRequest().authenticated()
             )

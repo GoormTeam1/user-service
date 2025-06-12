@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <!-- Spring Boot 기본 콘솔 설정 포함 -->
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <!-- ✅ info 로그 (JSON 형식) -->
+    <!-- ✅ info 로그 -->
     <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>../logs/service/user-service/info.log</file>
+        <file>/home/ubuntu/backend/logs/service/user-service/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/service/user-service/info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%msg%n</Pattern>
+        <encoder>
+            <pattern>%msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- ✅ error 로그 (JSON 형식) -->
+    <!-- ✅ error 로그 -->
     <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>../logs/service/user-service/error.log</file>
+        <file>/home/ubuntu/backend/logs/service/user-service/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/service/user-service/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%msg%n</Pattern>
+        <encoder>
+            <pattern>%msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- ✅ external 로그 (Kafka 등 외부 시스템 연동) -->
+    <!-- ✅ external 로그 -->
     <appender name="EXTERNAL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>../logs/service/user-service/external.log</file>
+        <file>/home/ubuntu/backend/logs/service/user-service/external.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/service/user-service/external.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/ubuntu/backend/logs/service/user-service/external.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%msg%n</Pattern>
+        <encoder>
+            <pattern>%msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- ✅ 각각의 로거에 Appender 연결 -->
+    <!-- ✅ 커스텀 로거 연결 -->
     <logger name="infoLogger" level="INFO" additivity="false">
         <appender-ref ref="INFO_LOG"/>
     </logger>
@@ -56,5 +57,4 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
-
 </configuration>
