@@ -12,6 +12,7 @@ stages:
   - test
   - sonarqube-check
   - publish
+  - notify
 
 # 3. 서비스에 따라 달라지는 변수들만 여기서 정의
 variables:
@@ -37,7 +38,19 @@ sonarqube-check:
 publish_and_scan_image:
   extends:
     - .publish_template
-    - .slack_notification_template
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
+# --- ★★★ 파이프라인 마지막에 알림 작업 추가 ★★★ ---
+slack-notify-on-success:
+  extends: .slack_notify_on_success_template
+  # 이 작업이 실행되려면, 바로 앞 스테이지의 마지막 작업이 필요하다고 명시
+  needs: ["publish_and_scan_image"]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+slack-notify-on-failure:
+  extends: .slack_notify_on_failure_template
+  needs: [] # needs를 비워두면 스테이지 순서에 따라 실행됨
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
