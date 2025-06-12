@@ -2,15 +2,15 @@
 
 # 1. 중앙 템플릿 파일 불러오기
 include:
-  - project: 'goorm-team1/cicd-templates' # 템플릿 프로젝트 경로
+  - project: 'goorm-team1/main-templates' # 템플릿 프로젝트 경로
     ref: main                          # 템플릿 프로젝트의 브랜치
     file: '/gradle-ci-template.yml'    # 사용할 템플릿 파일명
 
 # 2. 파이프라인의 전체 스테이지 순서 정의
 stages:
   - build
-  #- test
-  #- sonarqube-check
+  - test
+  - sonarqube-check
   - publish
 
 # 3. 서비스에 따라 달라지는 변수들만 여기서 정의
@@ -22,19 +22,19 @@ variables:
 build:
   extends: .build_template
   rules:
-    - if: '$CI_COMMIT_BRANCH == "cicd"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
-#test:
-#  extends: .test_template
-#  rules:
-#    - if: '$CI_COMMIT_BRANCH == "cicd"'
-#
-#sonarqube-check:
-#  extends: .sonarqube_template
-#  rules:
-#    - if: '$CI_COMMIT_BRANCH == "cicd"'
+test:
+  extends: .test_template
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+sonarqube-check:
+  extends: .sonarqube_template
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 publish_and_scan_image:
   extends: .publish_template
   rules:
-    - if: '$CI_COMMIT_BRANCH == "cicd"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
