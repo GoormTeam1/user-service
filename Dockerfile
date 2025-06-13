@@ -45,7 +45,7 @@ USER appuser
 COPY --from=builder /build/build/libs/*.jar app.jar
 
 # 애플리케이션이 사용할 포트를 명시적으로 외부에 알립니다.
-EXPOSE 8080
+EXPOSE 8081
 
 # 컨테이너가 시작될 때 이 명령어가 실행됩니다.
 ENTRYPOINT ["java", "-jar", "app.jar"]
