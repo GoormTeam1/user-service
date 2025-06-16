@@ -6,9 +6,9 @@
 
     <!-- ✅ info 로그 -->
     <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/logs/service/user-service/info.log</file>
+        <file>/logs/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/logs/service/user-service/info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/logs/info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -18,9 +18,9 @@
 
     <!-- ✅ error 로그 -->
     <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/logs/service/user-service/error.log</file>
+        <file>/logs/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/logs/service/user-service/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/logs/error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -30,9 +30,9 @@
 
     <!-- ✅ external 로그 -->
     <appender name="EXTERNAL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/logs/service/user-service/external.log</file>
+        <file>/logs/external.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/logs/service/user-service/external.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/logs/external.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
