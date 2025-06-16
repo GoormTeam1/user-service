@@ -35,10 +35,6 @@ FROM eclipse-temurin:17-jre-jammy
 # 작업 디렉터리 설정
 WORKDIR /app
 
-# 보안 강화를 위해 non-root 사용자 생성 및 사용
-# root 권한으로 컨테이너를 실행하는 것은 보안상 위험할 수 있습니다.
-RUN groupadd -r appuser && useradd --no-log-init -r -g appuser appuser
-USER appuser
 
 # 빌드 스테이지(builder)에서 생성된 Jar 파일만 복사해옵니다.
 # 멀티스테이지 빌드의 핵심으로, JDK나 Gradle 같은 무거운 빌드 도구들은 이 이미지에 포함되지 않습니다.
