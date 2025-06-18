@@ -55,9 +55,9 @@ publish_and_scan_image:
 #  tags:
 #    - deploy-runner
 
-slack-notify-on-failure:
-  extends: .slack_notify_on_failure_template
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  tags:
-    - deploy-runner
+#slack-notify-on-failure:
+#  extends: .slack_notify_on_failure_template
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#  tags:
+#    - deploy-runner
