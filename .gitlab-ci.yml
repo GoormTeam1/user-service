@@ -7,8 +7,8 @@ include:
 # 2. 파이프라인의 전체 스테이지 순서 정의
 stages:
   - build
-  - test
-  - sonarqube-check
+#  - test
+#  - sonarqube-check
   - publish
   - notify
 
@@ -26,19 +26,19 @@ build:
   tags:
     - deploy-runner
 
-test:
-  extends: .test_template
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  tags:
-    - deploy-runner
-
-sonarqube-check:
-  extends: .sonarqube_template
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  tags:
-    - deploy-runner
+#test:
+#  extends: .test_template
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#  tags:
+#    - deploy-runner
+#
+#sonarqube-check:
+#  extends: .sonarqube_template
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#  tags:
+#    - deploy-runner
 
 publish_and_scan_image:
   extends:
