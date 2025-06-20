@@ -19,6 +19,7 @@ spring:
     idle-timeout: 30000         # 30초 이상 유휴 상태면 커넥션 반환 (ms)
     max-lifetime: 900000        # 5분 지나면 커넥션 교체 (ms)
     connection-timeout: 5000    # 5초 내에 커넥션 못 얻으면 예외 (ms)
+    leak-detection-threshold: 5000
 
   kafka:
     consumer:
