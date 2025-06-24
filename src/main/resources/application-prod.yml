@@ -45,6 +45,8 @@ server:
   address: 0.0.0.0
 
 management:
+  server:
+    base-path: /actuator
   endpoints:
     web:
       exposure:
