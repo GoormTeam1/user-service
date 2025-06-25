@@ -45,11 +45,14 @@ server:
   address: 0.0.0.0
 
 management:
+  server:
+    base-path: /actuator
   endpoints:
     web:
       exposure:
-        include: health, info
-  endpoint:
-    health:
-      probes:
+        include: health, info, metrics, prometheus
+  metrics:
+    export:
+      prometheus:
         enabled: true
+
