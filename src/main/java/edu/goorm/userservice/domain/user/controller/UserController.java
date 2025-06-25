@@ -46,7 +46,7 @@ public class UserController {
     );
 
     return ResponseEntity.ok(
-        ApiResponse.success(HttpStatus.CREATED, "회원가입 성공", null));
+        ApiResponse.success(HttpStatus.CREATED, "회원가입 성공!", null));
   }
 
   @PostMapping("/login")
